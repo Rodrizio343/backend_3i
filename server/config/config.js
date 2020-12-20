@@ -14,7 +14,9 @@ let urlDB;
 if(process.env.NODE_ENV === 'dev'){
     urlDB = 'mongodb://localhost:27017/rolling'
 } else {
-    urlDB = 'mongodb+srv://user:rollingcode2020@cluster0.enaty.mongodb.net/rolling'
+    urlDB = process.env.MONGO_URI;
+    // 'mongodb+srv://user:rollingcode2020@cluster0.enaty.mongodb.net/rolling'
+    //se configra esta variable de entorno para evitar que se vean los datos de labase de datos
 }
 
 process.env.URLDB = urlDB;
