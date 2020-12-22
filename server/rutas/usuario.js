@@ -4,12 +4,15 @@ const bcrypt = require("bcrypt")
 //para realizar validadciones de metodo PUT, se referencia underscore como _
 const _=require('underscore')
 const app = express();
-const Usuario = require('../modelos/usuario')
+const Usuario = require('../modelos/usuario');
+
+//importar middleware para verificar token
+const {verificaToken, verificaAdminRole} = require('../middlewares/autenticacion')
 
 /*-------------------------
         METODO GET
 ---------------------------*/
-app.get('/usuario', function(req, res) { //req(solicitud) / res(respuesta)
+app.get('/usuario', verificaToken, function(req, res) { //req(solicitud) / res(respuesta)
     let desde = req.query.desde || 0;
     desde = Number(desde)
 
@@ -58,7 +61,7 @@ app.get('/usuario', function(req, res) { //req(solicitud) / res(respuesta)
 /*-------------------------
         METODO POST
 ---------------------------*/
-app.post('/usuario', function(req, res) { //req(solicitud) / res(respuesta)
+app.post('/usuario', [verificaToken, verificaAdminRole], function(req, res) { //req(solicitud) / res(respuesta)
     
     let body = req.body
 
@@ -109,7 +112,7 @@ app.post('/usuario', function(req, res) { //req(solicitud) / res(respuesta)
         METODO PUT
 ---------------------------*/
 
-app.put('/usuario/:id', function(req, res) { //req(solicitud) / res(respuesta)
+app.put('/usuario/:id', [verificaToken, verificaAdminRole], function(req, res) { //req(solicitud) / res(respuesta)
     let id=req.params.id;
     //body viene de body-parser
     //con _.pick, especifico que parametros del body se podran actualizar con el metodo PUT
@@ -139,7 +142,7 @@ app.put('/usuario/:id', function(req, res) { //req(solicitud) / res(respuesta)
         METODO DELETE
 ---------------------------*/
 
-app.delete('/usuario/:id', function(req, res) { //req(solicitud) / res(respuesta)
+app.delete('/usuario/:id', [verificaToken, verificaAdminRole], function(req, res) { //req(solicitud) / res(respuesta)
     let id=req.params.id;
 
     let estadoActualizado = {
